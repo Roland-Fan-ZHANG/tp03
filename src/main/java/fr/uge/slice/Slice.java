@@ -1,6 +1,8 @@
 package fr.uge.slice;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public interface Slice<E> {
     int size();
@@ -31,6 +33,13 @@ public interface Slice<E> {
         public E get(int index) {
             Objects.checkIndex(index, size());
             return elements[from + index];
+        }
+
+        @Override
+        public String toString(){
+            return Arrays.stream(elements, from, to)
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", ", "[", "]"));
         }
     }
 }
