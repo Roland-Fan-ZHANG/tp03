@@ -9,7 +9,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SliceTest {
-  /*
+
   @Nested
   public class Q1 {
     @Test
