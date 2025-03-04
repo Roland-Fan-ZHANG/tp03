@@ -15,6 +15,36 @@ public interface Slice<E> {
 
     Slice<E> subSlice(int from, int to);
 
+    default Slice<E> reversed(){
+        return new Slice<E>() {
+            @Override
+            public int size() {
+                return Slice.this.size();
+            }
+
+            @Override
+            public E get(int index) {
+                Objects.checkIndex(index, size());
+                return Slice.this.get(size() - 1 - index);
+            }
+
+            @Override
+            public Slice<E> subSlice(int from, int to) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String toString(){
+                return reversed().toString();
+            }
+
+            @Override
+            public Slice<E> reversed() {
+                return Slice.this;
+            }
+        };
+    }
+
     final class SliceImpl<E> implements Slice<E>{
         private final E[] elements;
         private final int from;
