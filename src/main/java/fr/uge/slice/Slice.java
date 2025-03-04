@@ -16,16 +16,16 @@ public interface Slice<E> {
     Slice<E> subSlice(int from, int to);
 
     default Slice<E> reversed(){
-        return new Slice<E>() {
+        return new Slice<>() {
             @Override
             public int size() {
-                return Slice.this.size();
+                return reversed().size();
             }
 
             @Override
             public E get(int index) {
                 Objects.checkIndex(index, size());
-                return Slice.this.get(size() - 1 - index);
+                return reversed().get(size() - 1 - index);
             }
 
             @Override
