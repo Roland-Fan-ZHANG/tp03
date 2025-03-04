@@ -2,6 +2,7 @@ package fr.uge.slice;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public interface Slice<E> {
@@ -15,6 +16,8 @@ public interface Slice<E> {
 
     Slice<E> subSlice(int from, int to);
 
+    void replaceAll(UnaryOperator<E> operator);
+
     default Slice<E> reversed(){
         return new Slice<>() {
             @Override
@@ -25,7 +28,7 @@ public interface Slice<E> {
             @Override
             public E get(int index) {
                 Objects.checkIndex(index, size());
-                return reversed().get(size() - 1 - index);
+                return Slice.this.get(size() - 1 - index);
             }
 
             @Override
@@ -34,11 +37,16 @@ public interface Slice<E> {
             }
 
             @Override
+            public void replaceAll(UnaryOperator<E> replacer) {
+                Objects.requireNonNull(replacer);
+                Slice.this.replaceAll(replacer);
+            }
+
+            @Override
             public String toString(){
                 return reversed().toString();
             }
 
-            @Override
             public Slice<E> reversed() {
                 return Slice.this;
             }
@@ -78,6 +86,14 @@ public interface Slice<E> {
         public Slice<E> subSlice(int fromOffset, int toOffset) {
             Objects.checkFromToIndex(fromOffset, toOffset, size());
             return new SliceImpl<>(elements, this.from + fromOffset, this.from + toOffset);
+        }
+
+        @Override
+        public void replaceAll(UnaryOperator<E> replacer) {
+            Objects.requireNonNull(replacer);
+            for (var i = from; i < to; i++) {
+                elements[i] = replacer.apply(elements[i]);
+            }
         }
     }
 }
