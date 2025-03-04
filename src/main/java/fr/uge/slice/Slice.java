@@ -13,6 +13,8 @@ public interface Slice<E> {
         return new SliceImpl<>(elements, from, to);
     }
 
+    Slice<E> subSlice(int from, int to);
+
     final class SliceImpl<E> implements Slice<E>{
         private final E[] elements;
         private final int from;
@@ -40,6 +42,12 @@ public interface Slice<E> {
             return Arrays.stream(elements, from, to)
                     .map(String::valueOf)
                     .collect(Collectors.joining(", ", "[", "]"));
+        }
+
+        @Override
+        public Slice<E> subSlice(int fromOffset, int toOffset) {
+            Objects.checkFromToIndex(fromOffset, toOffset, size());
+            return new SliceImpl<>(elements, this.from + fromOffset, this.from + toOffset);
         }
     }
 }

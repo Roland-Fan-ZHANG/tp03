@@ -164,7 +164,7 @@ public class SliceTest {
     }
   }
 
-/*
+
   @Nested
   public class Q3 {
     @Test
@@ -262,7 +262,7 @@ public class SliceTest {
     }
   }
 
-
+/*
   @Nested
   public class Q4 {
     @Test
