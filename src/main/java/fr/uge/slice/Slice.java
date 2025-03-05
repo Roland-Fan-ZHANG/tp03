@@ -4,12 +4,14 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public interface Slice<E> {
     int size();
     E get(int index);
 
     static <E> Slice<E> of(E[] elements, int from, int to) {
+        Objects.requireNonNull(elements);
         Objects.checkFromToIndex(from, to, elements.length);
         return new SliceImpl<>(elements, from, to);
     }
@@ -22,7 +24,7 @@ public interface Slice<E> {
         return new Slice<>() {
             @Override
             public int size() {
-                return reversed().size();
+                return Slice.this.size();
             }
 
             @Override
@@ -33,7 +35,8 @@ public interface Slice<E> {
 
             @Override
             public Slice<E> subSlice(int from, int to) {
-                throw new UnsupportedOperationException();
+                Objects.checkFromToIndex(from, to, size());
+                return Slice.this.subSlice(size() - to, size() - from).reversed();
             }
 
             @Override
@@ -43,8 +46,10 @@ public interface Slice<E> {
             }
 
             @Override
-            public String toString(){
-                return reversed().toString();
+            public String toString() {
+                return IntStream.range(0, size())
+                        .mapToObj(i -> String.valueOf(get(i)))
+                        .collect(Collectors.joining(", ", "[", "]"));
             }
 
             public Slice<E> reversed() {
